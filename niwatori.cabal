@@ -1,0 +1,45 @@
+name:                niwatori
+version:             0.1.0.0
+synopsis:            Initial project template from stack
+description:         Please see README.md
+homepage:            http://github.com/ahihi/niwatori#readme
+license:             OtherLicense
+license-file:        LICENSE
+author:              Miranda Kastemaa
+maintainer:          miranda@foldplop.com
+copyright:           CC0
+category:            Web
+build-type:          Simple
+-- extra-source-files:
+cabal-version:       >=1.10
+
+library
+  hs-source-dirs:      src
+  exposed-modules:     Niwatori
+                     , Niwatori.Kana
+  build-depends:       base >= 4.7 && < 5
+                     , romkan == 0.1.*
+                     , text == 1.2.*
+  default-language:    Haskell2010
+
+executable niwatori-exe
+  hs-source-dirs:      app
+  main-is:             Main.hs
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  build-depends:       base
+                     , niwatori
+                     , text == 1.2.*
+  default-language:    Haskell2010
+
+test-suite niwatori-test
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             Spec.hs
+  build-depends:       base
+                     , niwatori
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  default-language:    Haskell2010
+
+source-repository head
+  type:     git
+  location: https://github.com/ahihi/niwatori
