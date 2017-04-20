@@ -1,7 +1,8 @@
+{-# LANGUAGE LambdaCase #-}
+
 module Niwatori
-    ( sepKana
-    , sepKanas
-    ) where
+  ( splitKanaTexts
+  ) where
 
 import Data.Text (Text)
 import qualified Data.Text as Text
@@ -9,10 +10,21 @@ import NLP.Romkan
 
 import Niwatori.Kana
 
-sepKana :: Char -> Either Char Kana
-sepKana ch = case mkKana ch of
-  Nothing   -> Left ch
-  Just kana -> Right kana
+splitMaybes :: [Maybe a] -> [[a]]
+splitMaybes = go False
+  where
+    go wasJust = \case
+      []         -> consEmptyIfWasJust []
+      Nothing:xs -> consEmptyIfWasJust (go False xs)
+      Just x:xs  -> mapFirst (x:) (go True xs)
+      where
+        consEmptyIfWasJust
+          | wasJust   = ([]:)
+          | otherwise = id
+        mapFirst _ []     = []
+        mapFirst f (x:xs) = f x : xs
 
-sepKanas :: Text -> [Either Char Kana]
-sepKanas = Text.foldr (\ch es -> sepKana ch : es) []
+splitKanaTexts :: Text -> [Text]
+splitKanaTexts = map Text.pack . splitMaybes . map checkKana . Text.unpack
+  where
+    checkKana ch = fmap (const ch) (getKanaRoma ch)
